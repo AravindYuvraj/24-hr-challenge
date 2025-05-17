@@ -3,9 +3,9 @@
 
 import { MatchCard } from "@/components/matches/MatchCard";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Filter, Search } from "lucide-react";
+// import { Input } from "@/components/ui/input"; // Removed
+// import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"; // Removed
+// import { Filter, Search } from "lucide-react"; // Removed
 import { useToast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/hooks/use-auth-store";
@@ -75,12 +75,12 @@ export default function DashboardPage() {
     setIsLoading(false);
   }, [currentUser]);
 
-  const handleApplyFilters = () => {
-    toast({
-      title: "Feature Coming Soon",
-      description: "Filter functionality is not yet implemented.",
-    });
-  };
+  // const handleApplyFilters = () => { // Removed
+  //   toast({
+  //     title: "Feature Coming Soon",
+  //     description: "Filter functionality is not yet implemented.",
+  //   });
+  // };
 
   if (isLoading) {
     return <div className="container mx-auto py-8 text-center"><p>Loading matches...</p></div>;
@@ -109,6 +109,8 @@ export default function DashboardPage() {
         </p>
       </div>
 
+      {/* Removed filter bar section */}
+      {/* 
       <div className="mb-8 p-6 bg-card rounded-lg shadow-md flex flex-col md:flex-row gap-4 items-center">
         <div className="relative flex-grow w-full md:w-auto">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
@@ -138,6 +140,7 @@ export default function DashboardPage() {
           <Filter className="mr-2 h-4 w-4" /> Apply Filters
         </Button>
       </div>
+      */}
 
       {matches.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
