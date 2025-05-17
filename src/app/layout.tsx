@@ -1,10 +1,7 @@
 
-import type { Metadata } from 'next';
 import './globals.css';
 
-// Temporarily remove Font imports, ThemeProvider, and Toaster to isolate the issue.
-
-export const metadata: Metadata = {
+export const metadata = {
   title: 'SkillSwap (Debugging)',
   description: 'Debugging 404 issue for SkillSwap.',
 };
@@ -16,17 +13,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      {/* Simplified body class */}
+      {/* Simplified body with no dynamic classes from fonts */}
       <body>
-        {/* <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        > */}
-          {children}
-          {/* <Toaster /> */}
-        {/* </ThemeProvider> */}
+        {children}
       </body>
     </html>
   );
