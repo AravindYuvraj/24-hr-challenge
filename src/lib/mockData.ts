@@ -67,18 +67,30 @@ export const mockUserProfiles: UserProfile[] = [
   },
 ];
 
+// currentMockUser (Alice)
+// Teaches: Web Development (id: '1'), Python Programming (id: '5')
+// Learns: Yoga Instruction (id: '3'), Creative Writing (id: '6')
+
 export const mockMatches: Match[] = [
   {
     id: 'match1',
     user: { id: 'user2', name: 'Bob The Builder', profilePictureUrl: 'https://placehold.co/100x100.png', dataAiHint: 'man smiling', bio: 'Passionate about design and fitness.' },
-    matchingTeachSkills: [{ id: '2', name: 'Graphic Design' }, {id: '3', name: 'Yoga Instruction'}], // Bob can teach Alice Yoga
-    matchingLearnSkills: [{ id: '1', name: 'Web Development' }], // Alice can teach Bob Web Dev
+    // Bob's teach skills that Alice wants to learn:
+    // Alice learns 'Yoga Instruction' (id: '3'), Bob teaches 'Yoga Instruction' (id: '3'). Match.
+    matchingTeachSkills: [{ id: '3', name: 'Yoga Instruction' }],
+    // Alice's teach skills that Bob wants to learn:
+    // Bob learns 'Web Development' (id: '1'), Alice teaches 'Web Development' (id: '1'). Match.
+    matchingLearnSkills: [{ id: '1', name: 'Web Development' }],
   },
   {
     id: 'match2',
     user: { id: 'user3', name: 'Charlie Brown', profilePictureUrl: 'https://placehold.co/100x100.png', dataAiHint: 'person thinking', bio: 'Writer and language enthusiast.' },
-    matchingTeachSkills: [{ id: '6', name: 'Creative Writing' }], // Charlie can teach Alice Creative Writing
-    matchingLearnSkills: [{ id: '5', name: 'Python Programming' }], // Alice can teach Charlie Python
+    // Charlie's teach skills that Alice wants to learn:
+    // Alice learns 'Creative Writing' (id: '6'), Charlie teaches 'Creative Writing' (id: '6'). Match.
+    matchingTeachSkills: [{ id: '6', name: 'Creative Writing' }],
+    // Alice's teach skills that Charlie wants to learn:
+    // Charlie learns 'Python Programming' (id: '5'), Alice teaches 'Python Programming' (id: '5'). Match.
+    matchingLearnSkills: [{ id: '5', name: 'Python Programming' }],
   },
 ];
 
@@ -116,3 +128,5 @@ export const mockPairingRequests: PairingRequest[] = [
 
 // Current logged-in user for demo purposes - THIS IS THE USER WHO LOGS IN
 export const currentMockUser: UserProfile = mockUserProfiles[0]; // Alice, who has completed setup
+ 
+    
