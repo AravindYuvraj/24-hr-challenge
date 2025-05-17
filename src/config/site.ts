@@ -10,10 +10,10 @@ export type NavItem = {
 };
 
 export const siteConfig = {
-  name: "SkillSwap",
-  description: "Peer-to-peer skill exchange platform.",
-  url: "https://skillswap.example.com", // Replace with your actual URL
-  ogImage: "https://skillswap.example.com/og.jpg", // Replace with your actual OG image URL
+  name: "EduPair",
+  description: "Peer-to-peer learning network.",
+  url: "https://edupair.example.com", // Replace with your actual URL
+  ogImage: "https://edupair.example.com/og.jpg", // Replace with your actual OG image URL
   mainNav: [
     // For logged out users or general site nav if any
     { title: "Explore Users", href: "/explore", icon: Users },

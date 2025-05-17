@@ -2,23 +2,24 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
-import { Users, LogIn, Sparkles } from "lucide-react"; // Added Sparkles for a friendly touch
+import { Users, LogIn, Sparkles } from "lucide-react";
 
 export default function HomePage() {
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-background to-secondary p-8">
       <div className="text-center mb-12">
-        <Image 
-          src="https://placehold.co/150x150.png?text=SkillSwap" 
-          alt="SkillSwap Logo" 
-          width={150} 
-          height={150} 
+        <Image
+          src="/723f014c-4be0-4dd1-bd6e-cfba876674f7.png"
+          alt="EduPair Logo"
+          width={150}
+          height={150}
           className="rounded-full shadow-2xl mx-auto mb-6"
-          data-ai-hint="abstract logo"
+          data-ai-hint="logo handshake book lightbulb"
+          priority
         />
         <h1 className="text-5xl font-bold text-primary mb-4 tracking-tight flex items-center justify-center">
           <Sparkles className="mr-3 h-10 w-10 text-primary/80" />
-          Welcome to SkillSwap!
+          Welcome to EduPair!
         </h1>
         <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
           Join our friendly community to share your knowledge and learn new skills together.
@@ -42,9 +43,8 @@ export default function HomePage() {
       </div>
 
       <footer className="mt-20 text-center text-muted-foreground text-sm">
-        <p>&copy; {new Date().getFullYear()} SkillSwap. Happy learning!</p>
+        <p>&copy; {new Date().getFullYear()} EduPair. Happy learning!</p>
       </footer>
     </div>
   );
 }
-

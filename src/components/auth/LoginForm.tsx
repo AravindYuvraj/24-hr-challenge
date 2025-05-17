@@ -57,7 +57,7 @@ export function LoginForm() {
       login(genericUser);
       toast({
         title: "Login Successful",
-        description: "Welcome to SkillSwap!",
+        description: "Welcome to EduPair!",
       });
       router.push("/dashboard");
     }
@@ -74,7 +74,7 @@ export function LoginForm() {
   return (
     <Card className="w-full max-w-md shadow-xl">
       <CardHeader>
-        <CardTitle className="text-3xl font-bold text-primary">Login to SkillSwap</CardTitle>
+        <CardTitle className="text-3xl font-bold text-primary">Login to EduPair</CardTitle>
         <CardDescription>Enter your credentials to access your account.</CardDescription>
       </CardHeader>
       <CardContent>

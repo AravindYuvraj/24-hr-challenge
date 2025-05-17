@@ -11,8 +11,8 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: 'SkillSwap',
-  description: 'Peer-to-peer skill exchange platform by Firebase Studio',
+  title: 'EduPair',
+  description: 'EduPair: Peer-to-peer learning network.',
 };
 
 export default function RootLayout({

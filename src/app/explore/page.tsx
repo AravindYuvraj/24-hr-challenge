@@ -101,7 +101,7 @@ export default function ExplorePage() {
         <div className="container mx-auto flex flex-col sm:flex-row justify-between items-center px-4">
           <Link href="/" className="flex items-center gap-2 text-2xl font-bold text-primary mb-4 sm:mb-0">
             <Sparkles className="h-7 w-7" />
-            SkillSwap Community
+            EduPair Community
           </Link>
           <Button asChild variant="outline">
             <Link href="/auth/login">Join to Connect & Share</Link>
@@ -168,7 +168,7 @@ export default function ExplorePage() {
         )}
       </main>
        <footer className="py-8 text-center text-muted-foreground">
-        <p>&copy; {new Date().getFullYear()} SkillSwap. Explore, Learn, Share Together.</p>
+        <p>&copy; {new Date().getFullYear()} EduPair. Explore, Learn, Share Together.</p>
       </footer>
     </div>
   );

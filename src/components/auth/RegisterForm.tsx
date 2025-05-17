@@ -51,15 +51,15 @@ export function RegisterForm() {
       teachSkills: [],
       learnSkills: [],
       isProfilePublic: true,
-      bio: "New SkillSwap user!",
-      profilePictureUrl: `https://placehold.co/100x100.png`,
-      dataAiHint: 'person icon',
+      bio: "New EduPair user!",
+      profilePictureUrl: `/723f014c-4be0-4dd1-bd6e-cfba876674f7.png`, // Default to app logo or generic placeholder
+      dataAiHint: 'logo handshake book lightbulb',
       profileSetupComplete: false, // Initialize as false
     };
     login(newUser);
     toast({
         title: "Registration Successful",
-        description: `Welcome to SkillSwap, ${values.name}! Please set up your profile.`,
+        description: `Welcome to EduPair, ${values.name}! Please set up your profile.`,
       });
     router.push("/profile/setup"); // Redirect to skill setup page
   }
@@ -68,7 +68,7 @@ export function RegisterForm() {
     <Card className="w-full max-w-md shadow-xl">
       <CardHeader>
         <CardTitle className="text-3xl font-bold text-primary">Create an Account</CardTitle>
-        <CardDescription>Join SkillSwap to start learning and teaching.</CardDescription>
+        <CardDescription>Join EduPair to start learning and teaching.</CardDescription>
       </CardHeader>
       <CardContent>
         <Form {...form}>

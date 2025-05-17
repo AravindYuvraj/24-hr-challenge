@@ -17,7 +17,7 @@ export default function ProfileSetupPage() {
     <div className="container mx-auto py-8">
       <Alert className="mb-8 border-primary/50 text-primary bg-primary/10">
         <Sparkles className="h-5 w-5 !text-primary" /> {/* Changed Icon */}
-        <AlertTitle className="font-semibold">Welcome to SkillSwap, {user.name}!</AlertTitle>
+        <AlertTitle className="font-semibold">Welcome to EduPair, {user.name}!</AlertTitle>
         <AlertDescription>
           Let's get your profile ready! Please share skills you can teach and skills you're excited to learn.
           This helps us connect you with amazing people in our community.
