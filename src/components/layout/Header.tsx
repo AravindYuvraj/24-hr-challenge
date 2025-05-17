@@ -11,14 +11,20 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet"; // Added SheetHeader, SheetTitle
 import { Menu, Package2, Bell } from "lucide-react";
 import { siteConfig, type NavItem } from "@/config/site";
 import { useAuthStore } from "@/hooks/use-auth-store";
 import { UserAvatar } from "@/components/shared/UserAvatar";
 import { ThemeToggle } from "./ThemeToggle";
 import { useRouter } from "next/navigation";
-import { useToast } from "@/hooks/use-toast"; // Added import
+import { useToast } from "@/hooks/use-toast";
 
 interface HeaderProps {
   sidebarNavItems?: NavItem[];
@@ -27,7 +33,7 @@ interface HeaderProps {
 export function Header({ sidebarNavItems = siteConfig.sidebarNav }: HeaderProps) {
   const { user, logout, isAuthenticated } = useAuthStore();
   const router = useRouter();
-  const { toast } = useToast(); // Added toast
+  const { toast } = useToast();
 
   const handleLogout = () => {
     logout();
@@ -72,20 +78,24 @@ export function Header({ sidebarNavItems = siteConfig.sidebarNav }: HeaderProps)
           </Button>
         </SheetTrigger>
         <SheetContent side="left" className="bg-card">
-          <nav className="grid gap-6 text-lg font-medium">
+          <SheetHeader>
+            <SheetTitle>Menu</SheetTitle>
+          </SheetHeader>
+          <nav className="grid gap-4 py-6">
             <Link
               href="/dashboard"
-              className="flex items-center gap-2 text-lg font-semibold text-primary"
+              className="flex items-center gap-3 rounded-lg px-3 py-2 text-primary transition-all hover:text-primary-foreground hover:bg-primary/10 text-lg font-semibold"
             >
-              <Package2 className="h-6 w-6" />
-              <span>{siteConfig.name}</span>
+              <Package2 className="h-5 w-5" />
+              {siteConfig.name}
             </Link>
             {sidebarNavItems.map((item) => item.href && (
                 <Link
                   key={item.href}
                   href={item.href}
-                  className="text-muted-foreground hover:text-foreground"
+                  className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary"
                 >
+                  {item.icon && <item.icon className="h-4 w-4" />}
                   {item.title}
                 </Link>
               )
