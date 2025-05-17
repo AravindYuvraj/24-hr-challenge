@@ -22,13 +22,10 @@ export default function DashboardPage() {
 
   useEffect(() => {
     if (!currentUser) {
-      // User might not be loaded yet, or not authenticated
-      // AppLayout should handle redirection if not authenticated
       setIsLoading(false);
       return;
     }
 
-    // Filter out the current user from the list of potential matches
     const potentialMatchProfiles = mockUserProfiles.filter(
       (profile) => profile.id !== currentUser.id
     );
@@ -36,7 +33,6 @@ export default function DashboardPage() {
     const generatedMatches: Match[] = [];
 
     potentialMatchProfiles.forEach((potentialProfile) => {
-      // Skills potentialProfile can teach currentUser
       const matchingTeachSkills: AppSkill[] = [];
       potentialProfile.teachSkills.forEach((teachSkill) => {
         if (
@@ -44,12 +40,10 @@ export default function DashboardPage() {
             (learnSkill) => learnSkill.name.toLowerCase() === teachSkill.name.toLowerCase()
           )
         ) {
-          // Use the skill name from potentialProfile.teachSkills as it's what they are offering
           matchingTeachSkills.push({ id: teachSkill.id, name: teachSkill.name });
         }
       });
 
-      // Skills currentUser can teach potentialProfile
       const matchingLearnSkills: AppSkill[] = [];
       currentUser.teachSkills.forEach((teachSkill) => {
         if (
@@ -57,14 +51,13 @@ export default function DashboardPage() {
             (learnSkill) => learnSkill.name.toLowerCase() === teachSkill.name.toLowerCase()
           )
         ) {
-          // Use the skill name from currentUser.teachSkills as it's what you are offering
           matchingLearnSkills.push({ id: teachSkill.id, name: teachSkill.name });
         }
       });
 
       if (matchingTeachSkills.length > 0 || matchingLearnSkills.length > 0) {
         generatedMatches.push({
-          id: `match-${currentUser.id}-${potentialProfile.id}`, // More unique match ID
+          id: `match-${currentUser.id}-${potentialProfile.id}`,
           user: {
             id: potentialProfile.id,
             name: potentialProfile.name,
@@ -89,24 +82,15 @@ export default function DashboardPage() {
     });
   };
 
-  const handleLoadMore = () => {
-    toast({
-      title: "Feature Coming Soon",
-      description: "Loading more matches is not yet implemented.",
-    });
-  };
-
   if (isLoading) {
     return <div className="container mx-auto py-8 text-center"><p>Loading matches...</p></div>;
   }
 
   if (!currentUser) {
-    // This case should ideally be handled by AppLayout redirecting to login
     return <div className="container mx-auto py-8 text-center"><p>Please login to see your matches.</p></div>;
   }
   
   if (!currentUser.profileSetupComplete) {
-     // This case should ideally be handled by AppLayout redirecting to profile setup
     return (
       <div className="container mx-auto py-8 text-center">
         <p>Please complete your profile setup to see matches.</p>
@@ -125,7 +109,6 @@ export default function DashboardPage() {
         </p>
       </div>
 
-      {/* Filters Placeholder */}
       <div className="mb-8 p-6 bg-card rounded-lg shadow-md flex flex-col md:flex-row gap-4 items-center">
         <div className="relative flex-grow w-full md:w-auto">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
@@ -170,13 +153,6 @@ export default function DashboardPage() {
         </div>
       )}
       
-      {matches.length > 0 && ( // Only show load more if there are initial matches
-        <div className="mt-12 text-center">
-          <Button variant="outline" onClick={handleLoadMore}>
-            Load More Matches
-          </Button>
-        </div>
-      )}
     </div>
   );
 }

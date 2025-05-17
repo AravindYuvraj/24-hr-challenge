@@ -1,5 +1,5 @@
 
-import { LayoutDashboard, UserCircle, Mail, CalendarDays, Search, BarChartBig, Settings, LucideIcon } from 'lucide-react';
+import { LayoutDashboard, UserCircle, Mail, CalendarDays, Search, Users, Settings, LucideIcon } from 'lucide-react'; // Added Users
 
 export type NavItem = {
   title: string;
@@ -16,13 +16,14 @@ export const siteConfig = {
   ogImage: "https://skillswap.example.com/og.jpg", // Replace with your actual OG image URL
   mainNav: [
     // For logged out users or general site nav if any
+    { title: "Explore Users", href: "/explore", icon: Users },
   ] satisfies NavItem[],
   sidebarNav: [
     { title: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
     { title: "My Profile", href: "/profile", icon: UserCircle },
     { title: "Pairing Requests", href: "/requests", icon: Mail },
     { title: "Calendar", href: "/calendar", icon: CalendarDays, disabled: false },
-    // { title: "Explore Users", href: "/explore", icon: Search, disabled: true },
+    // { title: "Explore Users", href: "/explore", icon: Search, disabled: true }, // Can be removed if public explore is preferred
     // { title: "Analytics", href: "/analytics", icon: BarChartBig, disabled: true },
   ] satisfies NavItem[],
   settingsNav: [
@@ -30,4 +31,3 @@ export const siteConfig = {
     // { title: "Notifications", href: "/settings/notifications", icon: BellIcon },
   ] satisfies NavItem[],
 };
-

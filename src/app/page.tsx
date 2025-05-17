@@ -1,3 +1,4 @@
+
 "use client";
 
 import { Button } from "@/components/ui/button";
@@ -6,6 +7,7 @@ import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/hooks/use-auth-store";
 import { useEffect } from "react";
 import Image from "next/image";
+import { Users } from "lucide-react"; // Added Users icon
 
 export default function HomePage() {
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
@@ -43,6 +45,11 @@ export default function HomePage() {
           </Button>
           <Button asChild variant="outline" size="lg" className="shadow-md transition-transform hover:scale-105">
             <Link href="/auth/register">Register</Link>
+          </Button>
+          <Button asChild variant="secondary" size="lg" className="shadow-md transition-transform hover:scale-105">
+            <Link href="/explore" className="flex items-center gap-2">
+              <Users className="h-5 w-5" /> Explore Users
+            </Link>
           </Button>
         </div>
         <p className="mt-12 text-sm text-muted-foreground">
