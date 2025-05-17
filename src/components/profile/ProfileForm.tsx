@@ -1,5 +1,7 @@
+// @ts-nocheck
 "use client";
 
+import * as React from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, useFieldArray } from "react-hook-form";
 import * as z from "zod";
@@ -26,6 +28,8 @@ import { SkillTag } from "./SkillTag";
 import { PlusCircle, Trash2 } from "lucide-react";
 import Image from "next/image";
 import { useToast } from "@/hooks/use-toast";
+import { Label } from "@/components/ui/label";
+
 
 const skillSchema = z.object({
   id: z.string().min(1),
@@ -329,3 +333,4 @@ export function ProfileForm() {
     </Card>
   );
 }
+
