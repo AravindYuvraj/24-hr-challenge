@@ -28,6 +28,7 @@ export default function DashboardPage() {
       return;
     }
 
+    // Filter out the current user from the list of potential matches
     const potentialMatchProfiles = mockUserProfiles.filter(
       (profile) => profile.id !== currentUser.id
     );
@@ -40,9 +41,10 @@ export default function DashboardPage() {
       potentialProfile.teachSkills.forEach((teachSkill) => {
         if (
           currentUser.learnSkills.some(
-            (learnSkill) => learnSkill.name === teachSkill.name // Matching by name for simplicity with mock data
+            (learnSkill) => learnSkill.name.toLowerCase() === teachSkill.name.toLowerCase()
           )
         ) {
+          // Use the skill name from potentialProfile.teachSkills as it's what they are offering
           matchingTeachSkills.push({ id: teachSkill.id, name: teachSkill.name });
         }
       });
@@ -52,16 +54,17 @@ export default function DashboardPage() {
       currentUser.teachSkills.forEach((teachSkill) => {
         if (
           potentialProfile.learnSkills.some(
-            (learnSkill) => learnSkill.name === teachSkill.name // Matching by name
+            (learnSkill) => learnSkill.name.toLowerCase() === teachSkill.name.toLowerCase()
           )
         ) {
+          // Use the skill name from currentUser.teachSkills as it's what you are offering
           matchingLearnSkills.push({ id: teachSkill.id, name: teachSkill.name });
         }
       });
 
       if (matchingTeachSkills.length > 0 || matchingLearnSkills.length > 0) {
         generatedMatches.push({
-          id: `match-${potentialProfile.id}`,
+          id: `match-${currentUser.id}-${potentialProfile.id}`, // More unique match ID
           user: {
             id: potentialProfile.id,
             name: potentialProfile.name,
@@ -101,6 +104,17 @@ export default function DashboardPage() {
     // This case should ideally be handled by AppLayout redirecting to login
     return <div className="container mx-auto py-8 text-center"><p>Please login to see your matches.</p></div>;
   }
+  
+  if (!currentUser.profileSetupComplete) {
+     // This case should ideally be handled by AppLayout redirecting to profile setup
+    return (
+      <div className="container mx-auto py-8 text-center">
+        <p>Please complete your profile setup to see matches.</p>
+        <Button className="mt-4" onClick={() => router.push("/profile/setup")}>Setup Profile</Button>
+      </div>
+    );
+  }
+
 
   return (
     <div className="container mx-auto py-8">
@@ -151,12 +165,12 @@ export default function DashboardPage() {
       ) : (
         <div className="text-center py-12">
           <p className="text-xl text-muted-foreground">No matches found yet.</p>
-          <p className="mt-2">Complete your profile or adjust your skills to get suggestions!</p>
+          <p className="mt-2">Try adjusting your 'Teach' or 'Learn' skills in your profile to find new connections!</p>
           <Button className="mt-4" onClick={() => router.push("/profile")}>Update Profile</Button>
         </div>
       )}
       
-      {matches.length > 0 && (
+      {matches.length > 0 && ( // Only show load more if there are initial matches
         <div className="mt-12 text-center">
           <Button variant="outline" onClick={handleLoadMore}>
             Load More Matches
