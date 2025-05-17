@@ -9,7 +9,7 @@ import type { PairingRequest } from "@/types";
 import { UserAvatar } from "@/components/shared/UserAvatar";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Badge } from "@/components/ui/badge";
-import { BookOpen, Clock, Users } from "lucide-react";
+import { BookOpen, Clock, CalendarDays } from "lucide-react"; // Added CalendarDays
 import { format } from "date-fns";
 
 export default function CalendarPage() {
