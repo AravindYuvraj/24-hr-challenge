@@ -1,6 +1,7 @@
 
 "use client";
 
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import {
@@ -17,7 +18,7 @@ import {
   SheetHeader,
   SheetTitle,
   SheetTrigger,
-} from "@/components/ui/sheet"; // Added SheetHeader, SheetTitle
+} from "@/components/ui/sheet";
 import { Menu, Package2, Bell } from "lucide-react";
 import { siteConfig, type NavItem } from "@/config/site";
 import { useAuthStore } from "@/hooks/use-auth-store";
@@ -25,6 +26,7 @@ import { UserAvatar } from "@/components/shared/UserAvatar";
 import { ThemeToggle } from "./ThemeToggle";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
+import { Skeleton } from "@/components/ui/skeleton"; // For placeholder
 
 interface HeaderProps {
   sidebarNavItems?: NavItem[];
@@ -34,6 +36,11 @@ export function Header({ sidebarNavItems = siteConfig.sidebarNav }: HeaderProps)
   const { user, logout, isAuthenticated } = useAuthStore();
   const router = useRouter();
   const { toast } = useToast();
+  const [hasMounted, setHasMounted] = useState(false);
+
+  useEffect(() => {
+    setHasMounted(true);
+  }, []);
 
   const handleLogout = () => {
     logout();
@@ -109,39 +116,43 @@ export function Header({ sidebarNavItems = siteConfig.sidebarNav }: HeaderProps)
           <Bell className="h-5 w-5" />
           <span className="sr-only">Notifications</span>
         </Button>
-        {isAuthenticated && user ? (
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="relative h-10 w-10 rounded-full">
-                <UserAvatar user={user} />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent className="w-56" align="end" forceMount>
-              <DropdownMenuLabel className="font-normal">
-                <div className="flex flex-col space-y-1">
-                  <p className="text-sm font-medium leading-none">{user.name}</p>
-                  <p className="text-xs leading-none text-muted-foreground">
-                    {user.email}
-                  </p>
-                </div>
-              </DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem asChild>
-                <Link href="/profile">Profile</Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={handleSettings}>
-                Settings
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={handleLogout}>
-                Log out
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+        {hasMounted ? (
+          isAuthenticated && user ? (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="relative h-10 w-10 rounded-full">
+                  <UserAvatar user={user} />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-56" align="end" forceMount>
+                <DropdownMenuLabel className="font-normal">
+                  <div className="flex flex-col space-y-1">
+                    <p className="text-sm font-medium leading-none">{user.name}</p>
+                    <p className="text-xs leading-none text-muted-foreground">
+                      {user.email}
+                    </p>
+                  </div>
+                </DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem asChild>
+                  <Link href="/profile">Profile</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={handleSettings}>
+                  Settings
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={handleLogout}>
+                  Log out
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          ) : (
+            <Button asChild>
+              <Link href="/auth/login">Login</Link>
+            </Button>
+          )
         ) : (
-          <Button asChild>
-            <Link href="/auth/login">Login</Link>
-          </Button>
+          <Skeleton className="h-10 w-10 rounded-full" />
         )}
       </div>
     </header>
