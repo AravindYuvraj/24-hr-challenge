@@ -3,15 +3,15 @@
 
 import { MatchCard } from "@/components/matches/MatchCard";
 import { Button } from "@/components/ui/button";
-// import { Input } from "@/components/ui/input"; // Removed
-// import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"; // Removed
-// import { Filter, Search } from "lucide-react"; // Removed
+import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Search, ListFilter } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/hooks/use-auth-store";
 import { mockUserProfiles } from "@/lib/mockData";
 import type { UserProfile, Match, Skill as AppSkill } from "@/types";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 
 export default function DashboardPage() {
   const { toast } = useToast();
@@ -19,6 +19,10 @@ export default function DashboardPage() {
   const currentUser = useAuthStore((state) => state.user);
   const [matches, setMatches] = useState<Match[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+
+  const [searchTerm, setSearchTerm] = useState("");
+  const [skillTypeFilter, setSkillTypeFilter] = useState<"all" | "they-teach" | "you-teach">("all");
+  const [categoryFilter, setCategoryFilter] = useState<string>("all"); // Placeholder
 
   useEffect(() => {
     if (!currentUser) {
@@ -33,7 +37,7 @@ export default function DashboardPage() {
     const generatedMatches: Match[] = [];
 
     potentialMatchProfiles.forEach((potentialProfile) => {
-      const matchingTeachSkills: AppSkill[] = [];
+      const matchingTeachSkills: AppSkill[] = []; // Skills potentialProfile teaches that currentUser learns
       potentialProfile.teachSkills.forEach((teachSkill) => {
         if (
           currentUser.learnSkills.some(
@@ -44,7 +48,7 @@ export default function DashboardPage() {
         }
       });
 
-      const matchingLearnSkills: AppSkill[] = [];
+      const matchingLearnSkills: AppSkill[] = []; // Skills currentUser teaches that potentialProfile learns
       currentUser.teachSkills.forEach((teachSkill) => {
         if (
           potentialProfile.learnSkills.some(
@@ -75,12 +79,38 @@ export default function DashboardPage() {
     setIsLoading(false);
   }, [currentUser]);
 
-  // const handleApplyFilters = () => { // Removed
-  //   toast({
-  //     title: "Feature Coming Soon",
-  //     description: "Filter functionality is not yet implemented.",
-  //   });
-  // };
+  const filteredMatches = useMemo(() => {
+    let currentFilteredMatches = [...matches];
+
+    // Search Term Filter
+    if (searchTerm) {
+      currentFilteredMatches = currentFilteredMatches.filter(match => {
+        const term = searchTerm.toLowerCase();
+        const userNameMatch = match.user.name.toLowerCase().includes(term);
+        const userBioMatch = match.user.bio?.toLowerCase().includes(term) || false;
+        const teachSkillsMatch = match.matchingTeachSkills.some(skill => skill.name.toLowerCase().includes(term));
+        const learnSkillsMatch = match.matchingLearnSkills.some(skill => skill.name.toLowerCase().includes(term));
+        return userNameMatch || userBioMatch || teachSkillsMatch || learnSkillsMatch;
+      });
+    }
+
+    // Skill Type Filter
+    if (skillTypeFilter === "they-teach") {
+      currentFilteredMatches = currentFilteredMatches.filter(match => match.matchingTeachSkills.length > 0);
+    } else if (skillTypeFilter === "you-teach") {
+      currentFilteredMatches = currentFilteredMatches.filter(match => match.matchingLearnSkills.length > 0);
+    }
+
+    // Category Filter (Placeholder - actual filtering requires data model changes)
+    if (categoryFilter !== "all") {
+      // Placeholder: console.log("Category filter selected:", categoryFilter, "Actual filtering needs data model update.");
+      // To make this functional, skills would need a 'category' property,
+      // and this logic would check against that.
+    }
+
+    return currentFilteredMatches;
+  }, [matches, searchTerm, skillTypeFilter, categoryFilter]);
+
 
   if (isLoading) {
     return <div className="container mx-auto py-8 text-center"><p>Loading matches...</p></div>;
@@ -108,50 +138,52 @@ export default function DashboardPage() {
           Connect with users who have complementary skills.
         </p>
       </div>
-
-      {/* Removed filter bar section */}
-      {/* 
+      
       <div className="mb-8 p-6 bg-card rounded-lg shadow-md flex flex-col md:flex-row gap-4 items-center">
         <div className="relative flex-grow w-full md:w-auto">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-          <Input placeholder="Search by skill or name..." className="pl-10 w-full" />
+          <Input 
+            placeholder="Search by skill, name, or bio..." 
+            className="pl-10 w-full" 
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
         </div>
-        <Select>
+        <Select value={skillTypeFilter} onValueChange={(value) => setSkillTypeFilter(value as "all" | "they-teach" | "you-teach")}>
+          <SelectTrigger className="w-full md:w-[180px]">
+            <SelectValue placeholder="Filter by Skill Type" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All Skill Matches</SelectItem>
+            <SelectItem value="they-teach">They Teach You</SelectItem>
+            <SelectItem value="you-teach">You Teach Them</SelectItem>
+          </SelectContent>
+        </Select>
+        <Select value={categoryFilter} onValueChange={setCategoryFilter}>
           <SelectTrigger className="w-full md:w-[180px]">
             <SelectValue placeholder="Filter by category" />
           </SelectTrigger>
           <SelectContent>
+            <SelectItem value="all">All Categories</SelectItem>
             <SelectItem value="tech">Tech</SelectItem>
             <SelectItem value="creative">Creative</SelectItem>
             <SelectItem value="lifestyle">Lifestyle</SelectItem>
+            {/* Note: Actual category filtering requires skills to have a category property in the data model. */}
           </SelectContent>
         </Select>
-        <Select>
-          <SelectTrigger className="w-full md:w-[180px]">
-            <SelectValue placeholder="Sort by" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="relevance">Relevance</SelectItem>
-            <SelectItem value="newest">New Users</SelectItem>
-            <SelectItem value="mutual">Mutual Matches</SelectItem>
-          </SelectContent>
-        </Select>
-        <Button variant="outline" className="w-full md:w-auto" onClick={handleApplyFilters}>
-          <Filter className="mr-2 h-4 w-4" /> Apply Filters
-        </Button>
+         {/* Removed Apply Filters button for live filtering */}
       </div>
-      */}
 
-      {matches.length > 0 ? (
+      {filteredMatches.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {matches.map((match) => (
+          {filteredMatches.map((match) => (
             <MatchCard key={match.id} match={match} />
           ))}
         </div>
       ) : (
         <div className="text-center py-12">
-          <p className="text-xl text-muted-foreground">No matches found yet.</p>
-          <p className="mt-2">Try adjusting your 'Teach' or 'Learn' skills in your profile to find new connections!</p>
+          <p className="text-xl text-muted-foreground">No matches found for your current filters.</p>
+          <p className="mt-2">Try adjusting your search, filters, or update your 'Teach' or 'Learn' skills in your profile!</p>
           <Button className="mt-4" onClick={() => router.push("/profile")}>Update Profile</Button>
         </div>
       )}
@@ -159,3 +191,4 @@ export default function DashboardPage() {
     </div>
   );
 }
+
