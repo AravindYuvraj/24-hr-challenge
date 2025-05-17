@@ -9,7 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { UserAvatar } from "@/components/shared/UserAvatar";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { SkillTag } from "@/components/profile/SkillTag";
-import { Search, SortAlphaDown, Users } from "lucide-react";
+import { Search, ArrowDownAZ, Users } from "lucide-react"; // Corrected icon import
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 
@@ -133,7 +133,7 @@ export default function ExplorePage() {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="default">Relevance</SelectItem>
-                  <SelectItem value="name"><SortAlphaDown className="inline h-4 w-4 mr-2"/>Name (A-Z)</SelectItem>
+                  <SelectItem value="name"><ArrowDownAZ className="inline h-4 w-4 mr-2"/>Name (A-Z)</SelectItem> 
                 </SelectContent>
               </Select>
             </div>
@@ -173,3 +173,5 @@ export default function ExplorePage() {
     </div>
   );
 }
+
+    
