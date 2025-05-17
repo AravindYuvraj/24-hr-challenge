@@ -28,6 +28,7 @@ import { PlusCircle, Trash2 } from "lucide-react";
 import Image from "next/image";
 import { useToast } from "@/hooks/use-toast";
 import { Label } from "@/components/ui/label";
+import { useRouter, usePathname } from "next/navigation"; // Added useRouter and usePathname
 
 // Combine proficiency and interest levels for Zod enum validation
 const allPossibleLevels = [...proficiencyLevels, ...interestLevels] as const;
@@ -41,6 +42,7 @@ const skillSchema = z.object({
 const profileFormSchema = z.object({
   name: z.string().min(2, { message: "Name must be at least 2 characters." }),
   profilePictureUrl: z.string().url({ message: "Please enter a valid URL." }).optional().or(z.literal('')),
+  dataAiHint: z.string().optional(), // Added to schema
   bio: z.string().max(200, { message: "Bio must not exceed 200 characters." }).optional(),
   location: z.string().optional(),
   timezone: z.string().optional(),
@@ -52,14 +54,19 @@ const profileFormSchema = z.object({
 type ProfileFormValues = z.infer<typeof profileFormSchema>;
 
 export function ProfileForm() {
-  const { user, updateUserProfile } = useAuthStore();
+  const { user, updateUserProfile, completeProfileSetup } = useAuthStore();
   const { toast } = useToast();
+  const router = useRouter();
+  const pathname = usePathname();
+
+  const isSetupMode = pathname === "/profile/setup";
 
   const form = useForm<ProfileFormValues>({
     resolver: zodResolver(profileFormSchema),
     defaultValues: {
       name: user?.name || "",
       profilePictureUrl: user?.profilePictureUrl || "",
+      dataAiHint: user?.dataAiHint || "person placeholder",
       bio: user?.bio || "",
       location: user?.location || "",
       timezone: user?.timezone || "",
@@ -96,14 +103,23 @@ export function ProfileForm() {
         learnSkills: data.learnSkills.map(s => ({...s, level: s.level as SkillLevel | InterestLevel})),
       };
       updateUserProfile(profileToUpdate);
-      toast({
-        title: "Profile Updated",
-        description: "Your profile information has been successfully saved.",
-      });
+      
+      if (isSetupMode) {
+        completeProfileSetup(); // Mark setup as complete
+        toast({
+          title: "Profile Setup Complete!",
+          description: "Your skills have been saved. Welcome to the dashboard!",
+        });
+        router.push("/dashboard");
+      } else {
+        toast({
+          title: "Profile Updated",
+          description: "Your profile information has been successfully saved.",
+        });
+      }
     }
   }
   
-  // For new skill selection
   const [selectedPredefinedTeachSkillId, setSelectedPredefinedTeachSkillId] = React.useState("");
   const [newCustomTeachSkillName, setNewCustomTeachSkillName] = React.useState("");
   const [newTeachLevel, setNewTeachLevel] = React.useState<string>(""); 
@@ -122,7 +138,7 @@ export function ProfileForm() {
 
     if (newCustomTeachSkillName.trim() && newTeachLevel) {
       skillToAdd = {
-        id: `custom-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`, // Unique ID for custom skill
+        id: `custom-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`,
         name: newCustomTeachSkillName.trim(),
         level: newTeachLevel,
       };
@@ -202,8 +218,14 @@ export function ProfileForm() {
   return (
     <Card className="w-full shadow-lg">
       <CardHeader>
-        <CardTitle className="text-3xl font-semibold">Manage Your Profile</CardTitle>
-        <CardDescription>Update your personal information and skills to help others find you.</CardDescription>
+        <CardTitle className="text-3xl font-semibold">
+          {isSetupMode ? "Set Up Your Skills" : "Manage Your Profile"}
+        </CardTitle>
+        <CardDescription>
+          {isSetupMode 
+            ? "Tell us what you can teach and what you want to learn." 
+            : "Update your personal information and skills to help others find you."}
+        </CardDescription>
       </CardHeader>
       <CardContent>
         <Form {...form}>
@@ -218,7 +240,7 @@ export function ProfileForm() {
                   width={100} 
                   height={100} 
                   className="rounded-full aspect-square object-cover flex-shrink-0"
-                  data-ai-hint={user?.dataAiHint || "person placeholder"}
+                  data-ai-hint={form.watch("dataAiHint") || "person placeholder"}
                 />
                  <FormField
                   control={form.control}
@@ -234,6 +256,21 @@ export function ProfileForm() {
                   )}
                 />
               </div>
+              <FormField
+                control={form.control}
+                name="dataAiHint"
+                render={({ field }) => (
+                  <FormItem className="hidden"> {/* Can be hidden or made visible if user should edit it */}
+                    <FormLabel>AI Hint (for image search)</FormLabel>
+                    <FormControl>
+                      <Input placeholder="e.g. person portrait" {...field} value={field.value || ''} />
+                    </FormControl>
+                    <FormDescription>Keywords for Unsplash search for this profile picture.</FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
 
               <FormField
                 control={form.control}
@@ -435,12 +472,12 @@ export function ProfileForm() {
                 />
             </div>
 
-
-            <Button type="submit" size="lg" className="w-full md:w-auto">Save Changes</Button>
+            <Button type="submit" size="lg" className="w-full md:w-auto">
+              {isSetupMode ? "Continue to Dashboard" : "Save Changes"}
+            </Button>
           </form>
         </Form>
       </CardContent>
     </Card>
   );
 }
-

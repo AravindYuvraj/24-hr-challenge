@@ -1,3 +1,4 @@
+
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -43,8 +44,6 @@ export function RegisterForm() {
   function onSubmit(values: z.infer<typeof formSchema>) {
     // Simulate API call for registration
     console.log("Register submitted with:", values);
-    // In a real app, you'd call an API endpoint here.
-    // For demo, we'll create a new user profile and log them in.
     const newUser: UserProfile = {
       id: `user-${Date.now()}`,
       name: values.name,
@@ -55,13 +54,14 @@ export function RegisterForm() {
       bio: "New SkillSwap user!",
       profilePictureUrl: `https://placehold.co/100x100.png`,
       dataAiHint: 'person icon',
+      profileSetupComplete: false, // Initialize as false
     };
     login(newUser);
     toast({
         title: "Registration Successful",
-        description: `Welcome to SkillSwap, ${values.name}!`,
+        description: `Welcome to SkillSwap, ${values.name}! Please set up your profile.`,
       });
-    router.push("/dashboard");
+    router.push("/profile/setup"); // Redirect to skill setup page
   }
 
   return (
@@ -125,4 +125,3 @@ export function RegisterForm() {
     </Card>
   );
 }
-

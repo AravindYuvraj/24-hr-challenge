@@ -1,8 +1,9 @@
+
 "use client";
 
 import { create } from 'zustand';
 import type { UserProfile } from '@/types';
-import { currentMockUser } from '@/lib/mockData'; // For demo
+// Removed currentMockUser import as it's not directly used here for initialization logic
 
 interface AuthState {
   isAuthenticated: boolean;
@@ -10,6 +11,7 @@ interface AuthState {
   login: (userData: UserProfile) => void;
   logout: () => void;
   updateUserProfile: (updatedProfile: Partial<UserProfile>) => void;
+  completeProfileSetup: () => void; // New action
 }
 
 export const useAuthStore = create<AuthState>((set, get) => ({
@@ -21,6 +23,12 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     const currentUser = get().user;
     if (currentUser) {
       set({ user: { ...currentUser, ...updatedProfile } });
+    }
+  },
+  completeProfileSetup: () => {
+    const currentUser = get().user;
+    if (currentUser) {
+      set({ user: { ...currentUser, profileSetupComplete: true } });
     }
   }
 }));

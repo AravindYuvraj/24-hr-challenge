@@ -1,3 +1,4 @@
+
 import type { UserProfile, Match, PairingRequest, Skill, UserSkill } from '@/types';
 
 export const mockSkills: Skill[] = [
@@ -28,6 +29,7 @@ export const mockUserProfiles: UserProfile[] = [
       { id: '6', name: 'Creative Writing', level: 'Just curious' },
     ],
     isProfilePublic: true,
+    profileSetupComplete: true, // Alice has completed setup
   },
   {
     id: 'user2',
@@ -44,6 +46,7 @@ export const mockUserProfiles: UserProfile[] = [
       { id: '1', name: 'Web Development', level: 'Serious about learning' },
     ],
     isProfilePublic: true,
+    profileSetupComplete: true, // Bob has completed setup
   },
   {
     id: 'user3',
@@ -60,6 +63,7 @@ export const mockUserProfiles: UserProfile[] = [
       { id: '5', name: 'Python Programming', level: 'Serious about learning' },
     ],
     isProfilePublic: false,
+    profileSetupComplete: true, // Charlie has completed setup
   },
 ];
 
@@ -110,5 +114,5 @@ export const mockPairingRequests: PairingRequest[] = [
   },
 ];
 
-// Current logged-in user for demo purposes
-export const currentMockUser: UserProfile = mockUserProfiles[0];
+// Current logged-in user for demo purposes - THIS IS THE USER WHO LOGS IN
+export const currentMockUser: UserProfile = mockUserProfiles[0]; // Alice, who has completed setup

@@ -1,3 +1,4 @@
+
 export interface Skill {
   id: string;
   name: string;
@@ -15,17 +16,19 @@ export interface UserProfile {
   name: string;
   email: string;
   profilePictureUrl?: string;
+  dataAiHint?: string; // Added from RegisterForm logic for consistency
   bio?: string;
   location?: string;
   timezone?: string;
   teachSkills: UserSkill[];
   learnSkills: UserSkill[];
   isProfilePublic: boolean;
+  profileSetupComplete: boolean; // New flag
 }
 
 export interface Match {
   id: string;
-  user: Pick<UserProfile, 'id' | 'name' | 'profilePictureUrl' | 'bio'>;
+  user: Pick<UserProfile, 'id' | 'name' | 'profilePictureUrl' | 'bio' | 'dataAiHint'>;
   matchingTeachSkills: Skill[]; // Skills the matched user can teach you
   matchingLearnSkills: Skill[]; // Skills you can teach the matched user
 }
@@ -34,7 +37,7 @@ export type PairingRequestStatus = 'pending' | 'accepted' | 'declined' | 'cancel
 
 export interface PairingRequest {
   id: string;
-  user: Pick<UserProfile, 'id' | 'name' | 'profilePictureUrl'>;
+  user: Pick<UserProfile, 'id' | 'name' | 'profilePictureUrl' | 'dataAiHint'>;
   skill: Skill; 
   message?: string;
   status: PairingRequestStatus;

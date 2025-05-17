@@ -1,7 +1,8 @@
+
 "use client";
 
 import React, { useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation"; // Added usePathname
 import { useAuthStore } from "@/hooks/use-auth-store";
 import { Sidebar } from "@/components/layout/Sidebar";
 import { Header } from "@/components/layout/Header";
@@ -12,23 +13,33 @@ interface AppLayoutProps {
 }
 
 export default function AppLayout({ children }: AppLayoutProps) {
-  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+  const { isAuthenticated, user } = useAuthStore((state) => ({
+    isAuthenticated: state.isAuthenticated,
+    user: state.user,
+  }));
   const router = useRouter();
+  const pathname = usePathname();
 
   useEffect(() => {
     if (!isAuthenticated) {
       router.push("/auth/login");
+    } else if (user && !user.profileSetupComplete && pathname !== '/profile/setup') {
+      // If authenticated, user exists, setup is not complete, and not already on setup page
+      router.push('/profile/setup');
     }
-  }, [isAuthenticated, router]);
+  }, [isAuthenticated, user, router, pathname]);
 
-  if (!isAuthenticated) {
-    // Optional: show a loading spinner or a blank page while redirecting
+  // If redirecting or initial load before user state is confirmed
+  if (!isAuthenticated || (user && !user.profileSetupComplete && pathname !== '/profile/setup')) {
     return (
       <div className="flex min-h-screen items-center justify-center">
         <p>Loading...</p>
       </div>
     );
   }
+
+  // If on setup page, potentially show a more focused layout in future. For now, uses full layout.
+  // const isSetupPage = pathname === '/profile/setup';
 
   return (
     <div className="grid min-h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr]">
