@@ -1,3 +1,4 @@
+
 "use client";
 
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -6,7 +7,7 @@ import { UserAvatar } from "@/components/shared/UserAvatar";
 import type { Match, Skill } from "@/types";
 import { SkillTag } from "@/components/profile/SkillTag";
 import { PairRequestModal } from "./PairRequestModal";
-import { Zap, BookOpen } from "lucide-react";
+import { Zap, BookOpen, Handshake } from "lucide-react"; // Added Handshake
 
 interface MatchCardProps {
   match: Match;
@@ -28,7 +29,7 @@ export function MatchCard({ match }: MatchCardProps) {
         {matchingTeachSkills.length > 0 && (
           <div className="mb-3">
             <h4 className="text-sm font-semibold mb-1 text-foreground/80 flex items-center">
-              <BookOpen className="h-4 w-4 mr-2 text-accent" /> They can teach you:
+              <BookOpen className="h-4 w-4 mr-2 text-accent" /> They can share:
             </h4>
             <div className="flex flex-wrap gap-2">
               {matchingTeachSkills.map((skill) => (
@@ -40,7 +41,7 @@ export function MatchCard({ match }: MatchCardProps) {
         {matchingLearnSkills.length > 0 && (
           <div>
             <h4 className="text-sm font-semibold mb-1 text-foreground/80 flex items-center">
-              <Zap className="h-4 w-4 mr-2 text-accent" /> You can teach them:
+              <Zap className="h-4 w-4 mr-2 text-accent" /> You can share:
             </h4>
             <div className="flex flex-wrap gap-2">
               {matchingLearnSkills.map((skill) => (
@@ -53,7 +54,8 @@ export function MatchCard({ match }: MatchCardProps) {
       <CardFooter className="p-4 border-t">
         <PairRequestModal match={match}>
           <Button className="w-full" variant="default">
-            Request to Pair
+            <Handshake className="mr-2 h-4 w-4" />
+            Connect & Learn Together
           </Button>
         </PairRequestModal>
       </CardFooter>

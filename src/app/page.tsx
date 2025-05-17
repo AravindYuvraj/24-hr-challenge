@@ -2,7 +2,7 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
-import { Users, LogIn } from "lucide-react";
+import { Users, LogIn, Sparkles } from "lucide-react"; // Added Sparkles for a friendly touch
 
 export default function HomePage() {
   return (
@@ -16,12 +16,13 @@ export default function HomePage() {
           className="rounded-full shadow-2xl mx-auto mb-6"
           data-ai-hint="abstract logo"
         />
-        <h1 className="text-5xl font-bold text-primary mb-4 tracking-tight">
+        <h1 className="text-5xl font-bold text-primary mb-4 tracking-tight flex items-center justify-center">
+          <Sparkles className="mr-3 h-10 w-10 text-primary/80" />
           Welcome to SkillSwap!
         </h1>
         <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-          Connect, learn, and share your skills with a vibrant community.
-          Whether you're looking to teach or eager to learn, SkillSwap is your platform for growth.
+          Join our friendly community to share your knowledge and learn new skills together.
+          It's all about growing and connecting!
         </p>
       </div>
 
@@ -29,20 +30,21 @@ export default function HomePage() {
         <Button asChild size="lg" className="shadow-lg hover:shadow-xl transition-shadow">
           <Link href="/explore" className="flex items-center">
             <Users className="mr-2 h-5 w-5" />
-            Explore Users
+            Explore Our Community
           </Link>
         </Button>
         <Button asChild variant="outline" size="lg" className="shadow-lg hover:shadow-xl transition-shadow">
           <Link href="/auth/login" className="flex items-center">
             <LogIn className="mr-2 h-5 w-5" />
-            Login or Register
+            Join or Sign In
           </Link>
         </Button>
       </div>
 
       <footer className="mt-20 text-center text-muted-foreground text-sm">
-        <p>&copy; {new Date().getFullYear()} SkillSwap. All rights reserved.</p>
+        <p>&copy; {new Date().getFullYear()} SkillSwap. Happy learning!</p>
       </footer>
     </div>
   );
 }
+

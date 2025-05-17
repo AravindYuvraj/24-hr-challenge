@@ -9,7 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { UserAvatar } from "@/components/shared/UserAvatar";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { SkillTag } from "@/components/profile/SkillTag";
-import { Search, ArrowDownAZ, Users } from "lucide-react"; // Corrected icon import
+import { Search, ArrowDownAZ, Users, Sparkles } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 
@@ -27,7 +27,7 @@ const PublicUserCard = ({ user }: { user: UserProfile }) => {
         {user.teachSkills.length > 0 && (
           <div className="mb-3">
             <h4 className="text-sm font-semibold mb-1 text-foreground/80">
-              Can Teach:
+              Happy to Share:
             </h4>
             <div className="flex flex-wrap gap-2">
               {user.teachSkills.map((skill) => (
@@ -39,7 +39,7 @@ const PublicUserCard = ({ user }: { user: UserProfile }) => {
         {user.learnSkills.length > 0 && (
           <div>
             <h4 className="text-sm font-semibold mb-1 text-foreground/80">
-              Wants to Learn:
+              Eager to Learn:
             </h4>
             <div className="flex flex-wrap gap-2">
               {user.learnSkills.map((skill) => (
@@ -49,7 +49,7 @@ const PublicUserCard = ({ user }: { user: UserProfile }) => {
           </div>
         )}
         {user.teachSkills.length === 0 && user.learnSkills.length === 0 && (
-          <p className="text-sm text-muted-foreground">No skills listed yet.</p>
+          <p className="text-sm text-muted-foreground">Skills coming soon!</p>
         )}
       </CardContent>
       {/* No "Request to Pair" button for public view */}
@@ -100,11 +100,11 @@ export default function ExplorePage() {
       <header className="py-6 bg-card shadow-md">
         <div className="container mx-auto flex flex-col sm:flex-row justify-between items-center px-4">
           <Link href="/" className="flex items-center gap-2 text-2xl font-bold text-primary mb-4 sm:mb-0">
-            <Users className="h-7 w-7" />
-            SkillSwap Explore
+            <Sparkles className="h-7 w-7" />
+            SkillSwap Community
           </Link>
           <Button asChild variant="outline">
-            <Link href="/auth/login">Login to Connect</Link>
+            <Link href="/auth/login">Join to Connect & Share</Link>
           </Button>
         </div>
       </header>
@@ -113,7 +113,7 @@ export default function ExplorePage() {
         <div className="mb-8 p-6 bg-card rounded-lg shadow-md">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
             <div className="md:col-span-2">
-              <label htmlFor="search-name-bio" className="block text-sm font-medium text-muted-foreground mb-1">Search by Name or Bio</label>
+              <label htmlFor="search-name-bio" className="block text-sm font-medium text-muted-foreground mb-1">Find by Name or Bio</label>
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
                 <Input
@@ -139,7 +139,7 @@ export default function ExplorePage() {
             </div>
           </div>
            <div className="mt-4">
-              <label htmlFor="search-skill" className="block text-sm font-medium text-muted-foreground mb-1">Filter by Skill (Teach or Learn)</label>
+              <label htmlFor="search-skill" className="block text-sm font-medium text-muted-foreground mb-1">Filter by Skill (Shared or Learned)</label>
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
                 <Input
@@ -162,16 +162,14 @@ export default function ExplorePage() {
         ) : (
           <div className="text-center py-12">
             <Users className="h-16 w-16 text-muted-foreground/50 mx-auto mb-4" />
-            <p className="text-xl text-muted-foreground">No users found matching your criteria.</p>
-            <p className="mt-2">Try adjusting your search or filters.</p>
+            <p className="text-xl text-muted-foreground">No community members found matching your criteria.</p>
+            <p className="mt-2">Try adjusting your search or filters!</p>
           </div>
         )}
       </main>
        <footer className="py-8 text-center text-muted-foreground">
-        <p>&copy; {new Date().getFullYear()} SkillSwap. Explore, Learn, Share.</p>
+        <p>&copy; {new Date().getFullYear()} SkillSwap. Explore, Learn, Share Together.</p>
       </footer>
     </div>
   );
 }
-
-    

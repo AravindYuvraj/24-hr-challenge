@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState } from "react";
@@ -17,6 +18,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import type { Match, Skill } from "@/types";
 import { useToast } from "@/hooks/use-toast";
+import { Send } from "lucide-react";
 
 interface PairRequestModalProps {
   match: Match;
@@ -41,8 +43,8 @@ export function PairRequestModal({ match, children }: PairRequestModalProps) {
   const handleSubmit = () => {
     if (!selectedSkill) {
       toast({
-        title: "Error",
-        description: "Please select a skill to focus on.",
+        title: "Skill Selection",
+        description: "Please choose a skill to focus on for your connection.",
         variant: "destructive",
       });
       return;
@@ -55,8 +57,8 @@ export function PairRequestModal({ match, children }: PairRequestModalProps) {
       preferredTime,
     });
     toast({
-      title: "Request Sent!",
-      description: `Your pairing request to ${userToRequest.name} regarding ${availableSkills.find(s=>s.skill.id === selectedSkill)?.skill.name} has been sent.`,
+      title: "Connection Request Sent!",
+      description: `Your request to connect with ${userToRequest.name} about ${availableSkills.find(s=>s.skill.id === selectedSkill)?.skill.name} has been sent.`,
     });
     setIsOpen(false);
     setSelectedSkill("");
@@ -69,9 +71,9 @@ export function PairRequestModal({ match, children }: PairRequestModalProps) {
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent className="sm:max-w-[480px] bg-card">
         <DialogHeader>
-          <DialogTitle>Request to Pair with {userToRequest.name}</DialogTitle>
+          <DialogTitle>Connect with {userToRequest.name}</DialogTitle>
           <DialogDescription>
-            Specify the skill and your availability.
+            Let them know which skill you'd like to exchange and your availability.
           </DialogDescription>
         </DialogHeader>
         <div className="grid gap-4 py-4">
@@ -86,7 +88,7 @@ export function PairRequestModal({ match, children }: PairRequestModalProps) {
               <SelectContent>
                 {availableSkills.map(({ type, skill }) => (
                   <SelectItem key={`${type}-${skill.id}`} value={skill.id}>
-                    {skill.name} ({type === 'teach' ? `${userToRequest.name} teaches` : `You teach ${userToRequest.name}`})
+                    {skill.name} ({type === 'teach' ? `${userToRequest.name} shares` : `You share with ${userToRequest.name}`})
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -100,7 +102,7 @@ export function PairRequestModal({ match, children }: PairRequestModalProps) {
               id="message"
               value={message}
               onChange={(e) => setMessage(e.target.value)}
-              placeholder="Optional: Add a brief message (max 300 chars)"
+              placeholder="Optional: A friendly note (max 300 chars)"
               maxLength={300}
               className="col-span-3"
             />
@@ -120,7 +122,10 @@ export function PairRequestModal({ match, children }: PairRequestModalProps) {
         </div>
         <DialogFooter>
           <Button variant="outline" onClick={() => setIsOpen(false)}>Cancel</Button>
-          <Button type="submit" onClick={handleSubmit}>Send Request</Button>
+          <Button type="submit" onClick={handleSubmit}>
+            <Send className="mr-2 h-4 w-4" />
+            Send Connection Request
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

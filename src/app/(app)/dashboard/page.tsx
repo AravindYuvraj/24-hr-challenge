@@ -5,7 +5,7 @@ import { MatchCard } from "@/components/matches/MatchCard";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Search, ListFilter } from "lucide-react";
+import { Search, ListFilter, Users } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/hooks/use-auth-store";
@@ -113,17 +113,17 @@ export default function DashboardPage() {
 
 
   if (isLoading) {
-    return <div className="container mx-auto py-8 text-center"><p>Loading matches...</p></div>;
+    return <div className="container mx-auto py-8 text-center"><p>Finding skill connections for you...</p></div>;
   }
 
   if (!currentUser) {
-    return <div className="container mx-auto py-8 text-center"><p>Please login to see your matches.</p></div>;
+    return <div className="container mx-auto py-8 text-center"><p>Please login to see your skill connections.</p></div>;
   }
   
   if (!currentUser.profileSetupComplete) {
     return (
       <div className="container mx-auto py-8 text-center">
-        <p>Please complete your profile setup to see matches.</p>
+        <p>Let's set up your profile to find skill connections!</p>
         <Button className="mt-4" onClick={() => router.push("/profile/setup")}>Setup Profile</Button>
       </div>
     );
@@ -133,9 +133,9 @@ export default function DashboardPage() {
   return (
     <div className="container mx-auto py-8">
       <div className="mb-8 text-center">
-        <h1 className="text-4xl font-bold tracking-tight text-primary">Your Skill Matches</h1>
+        <h1 className="text-4xl font-bold tracking-tight text-primary">Discover Skill Connections</h1>
         <p className="mt-2 text-lg text-muted-foreground">
-          Connect with users who have complementary skills.
+          People you can learn from and teach, based on your skills.
         </p>
       </div>
       
@@ -154,7 +154,7 @@ export default function DashboardPage() {
             <SelectValue placeholder="Filter by Skill Type" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">All Skill Matches</SelectItem>
+            <SelectItem value="all">All Skill Connections</SelectItem>
             <SelectItem value="they-teach">They Teach You</SelectItem>
             <SelectItem value="you-teach">You Teach Them</SelectItem>
           </SelectContent>
@@ -171,7 +171,6 @@ export default function DashboardPage() {
             {/* Note: Actual category filtering requires skills to have a category property in the data model. */}
           </SelectContent>
         </Select>
-         {/* Removed Apply Filters button for live filtering */}
       </div>
 
       {filteredMatches.length > 0 ? (
@@ -182,7 +181,8 @@ export default function DashboardPage() {
         </div>
       ) : (
         <div className="text-center py-12">
-          <p className="text-xl text-muted-foreground">No matches found for your current filters.</p>
+          <Users className="h-16 w-16 text-muted-foreground/50 mx-auto mb-4" />
+          <p className="text-xl text-muted-foreground">No connections found for your current filters.</p>
           <p className="mt-2">Try adjusting your search, filters, or update your 'Teach' or 'Learn' skills in your profile!</p>
           <Button className="mt-4" onClick={() => router.push("/profile")}>Update Profile</Button>
         </div>
@@ -191,4 +191,3 @@ export default function DashboardPage() {
     </div>
   );
 }
-
