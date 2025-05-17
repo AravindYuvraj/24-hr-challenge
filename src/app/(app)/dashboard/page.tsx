@@ -1,3 +1,4 @@
+
 "use client";
 
 import { MatchCard } from "@/components/matches/MatchCard";
@@ -6,10 +7,29 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Filter, Search } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
+import { useRouter } from "next/navigation"; // Added import
 
 export default function DashboardPage() {
+  const { toast } = useToast(); // Added toast
+  const router = useRouter(); // Added router
+
   // In a real app, matches would be fetched based on the logged-in user
   const matches = mockMatches;
+
+  const handleApplyFilters = () => {
+    toast({
+      title: "Feature Coming Soon",
+      description: "Filter functionality is not yet implemented.",
+    });
+  };
+
+  const handleLoadMore = () => {
+    toast({
+      title: "Feature Coming Soon",
+      description: "Loading more matches is not yet implemented.",
+    });
+  };
 
   return (
     <div className="container mx-auto py-8">
@@ -46,7 +66,7 @@ export default function DashboardPage() {
             <SelectItem value="mutual">Mutual Matches</SelectItem>
           </SelectContent>
         </Select>
-        <Button variant="outline" className="w-full md:w-auto">
+        <Button variant="outline" className="w-full md:w-auto" onClick={handleApplyFilters}>
           <Filter className="mr-2 h-4 w-4" /> Apply Filters
         </Button>
       </div>
@@ -61,14 +81,14 @@ export default function DashboardPage() {
         <div className="text-center py-12">
           <p className="text-xl text-muted-foreground">No matches found yet.</p>
           <p className="mt-2">Complete your profile to get better suggestions!</p>
-          <Button className="mt-4" onClick={() => alert("Navigate to profile edit")}>Update Profile</Button>
+          <Button className="mt-4" onClick={() => router.push("/profile")}>Update Profile</Button>
         </div>
       )}
       
       {/* Infinite Scroll Placeholder */}
       {matches.length > 0 && (
         <div className="mt-12 text-center">
-          <Button variant="outline" onClick={() => alert("Load more matches...")}>
+          <Button variant="outline" onClick={handleLoadMore}>
             Load More Matches
           </Button>
         </div>

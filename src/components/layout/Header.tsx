@@ -1,3 +1,4 @@
+
 "use client";
 
 import Link from "next/link";
@@ -17,6 +18,7 @@ import { useAuthStore } from "@/hooks/use-auth-store";
 import { UserAvatar } from "@/components/shared/UserAvatar";
 import { ThemeToggle } from "./ThemeToggle";
 import { useRouter } from "next/navigation";
+import { useToast } from "@/hooks/use-toast"; // Added import
 
 interface HeaderProps {
   sidebarNavItems?: NavItem[];
@@ -25,10 +27,25 @@ interface HeaderProps {
 export function Header({ sidebarNavItems = siteConfig.sidebarNav }: HeaderProps) {
   const { user, logout, isAuthenticated } = useAuthStore();
   const router = useRouter();
+  const { toast } = useToast(); // Added toast
 
   const handleLogout = () => {
     logout();
     router.push("/auth/login");
+  };
+
+  const handleNotifications = () => {
+    toast({
+      title: "Feature Coming Soon",
+      description: "Notifications are not yet implemented.",
+    });
+  };
+
+  const handleSettings = () => {
+    toast({
+      title: "Feature Coming Soon",
+      description: "The settings page is not yet implemented.",
+    });
   };
 
   return (
@@ -78,7 +95,7 @@ export function Header({ sidebarNavItems = siteConfig.sidebarNav }: HeaderProps)
       </Sheet>
       <div className="flex w-full items-center justify-end gap-4 md:ml-auto md:gap-2 lg:gap-4">
         <ThemeToggle />
-        <Button variant="ghost" size="icon" className="rounded-full" onClick={() => alert("Notifications not implemented yet.")}>
+        <Button variant="ghost" size="icon" className="rounded-full" onClick={handleNotifications}>
           <Bell className="h-5 w-5" />
           <span className="sr-only">Notifications</span>
         </Button>
@@ -102,7 +119,7 @@ export function Header({ sidebarNavItems = siteConfig.sidebarNav }: HeaderProps)
               <DropdownMenuItem asChild>
                 <Link href="/profile">Profile</Link>
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => alert("Settings page not implemented yet.")}>
+              <DropdownMenuItem onClick={handleSettings}>
                 Settings
               </DropdownMenuItem>
               <DropdownMenuSeparator />

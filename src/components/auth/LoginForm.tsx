@@ -1,3 +1,4 @@
+
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -62,6 +63,14 @@ export function LoginForm() {
     }
   }
 
+  const handleForgotPassword = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+    toast({
+      title: "Feature Coming Soon",
+      description: "Forgot password functionality is not yet implemented.",
+    });
+  };
+
   return (
     <Card className="w-full max-w-md shadow-xl">
       <CardHeader>
@@ -107,7 +116,7 @@ export function LoginForm() {
           </Link>
         </div>
         <div className="mt-4 text-center text-sm">
-          <Link href="#" className="text-xs text-muted-foreground hover:underline" onClick={(e) => { e.preventDefault(); alert("Forgot password functionality not implemented yet.");}}>
+          <Link href="#" className="text-xs text-muted-foreground hover:underline" onClick={handleForgotPassword}>
             Forgot password?
           </Link>
         </div>
