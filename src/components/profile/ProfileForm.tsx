@@ -1,4 +1,4 @@
-// @ts-nocheck
+
 "use client";
 
 import * as React from "react";
@@ -22,19 +22,20 @@ import { Separator } from "@/components/ui/separator";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { useAuthStore } from "@/hooks/use-auth-store";
-import type { UserProfile as UserProfileType, UserSkill } from "@/types";
-import { predefinedSkills, proficiencyLevels, interestLevels } from "@/types";
+import { predefinedSkills, proficiencyLevels, interestLevels, type UserProfile as UserProfileType, type UserSkill, type SkillLevel, type InterestLevel } from "@/types";
 import { SkillTag } from "./SkillTag";
 import { PlusCircle, Trash2 } from "lucide-react";
 import Image from "next/image";
 import { useToast } from "@/hooks/use-toast";
 import { Label } from "@/components/ui/label";
 
+// Combine proficiency and interest levels for Zod enum validation
+const allPossibleLevels = [...proficiencyLevels, ...interestLevels] as const;
 
 const skillSchema = z.object({
   id: z.string().min(1),
   name: z.string().min(1, "Skill name is required."),
-  level: z.string().min(1, "Level is required."),
+  level: z.enum(allPossibleLevels, { errorMap: () => ({ message: "Please select a valid level." }) }),
 });
 
 const profileFormSchema = z.object({
@@ -62,9 +63,17 @@ export function ProfileForm() {
       bio: user?.bio || "",
       location: user?.location || "",
       timezone: user?.timezone || "",
-      teachSkills: user?.teachSkills || [],
-      learnSkills: user?.learnSkills || [],
-      isProfilePublic: user?.isProfilePublic || true,
+      teachSkills: user?.teachSkills ? user.teachSkills.map(skill => ({
+        id: skill.id,
+        name: skill.name,
+        level: skill.level as typeof allPossibleLevels[number], // Ensure level matches enum
+      })) : [],
+      learnSkills: user?.learnSkills ? user.learnSkills.map(skill => ({
+        id: skill.id,
+        name: skill.name,
+        level: skill.level as typeof allPossibleLevels[number], // Ensure level matches enum
+      })) : [],
+      isProfilePublic: user?.isProfilePublic ?? true,
     },
   });
 
@@ -81,7 +90,13 @@ export function ProfileForm() {
   function onSubmit(data: ProfileFormValues) {
     console.log("Profile update data:", data);
     if (user) {
-      updateUserProfile(data as Partial<UserProfileType>);
+      // Map levels back to the broader UserSkill type if necessary, though Zod schema now aligns
+      const profileToUpdate: Partial<UserProfileType> = {
+        ...data,
+        teachSkills: data.teachSkills.map(s => ({...s, level: s.level as SkillLevel | InterestLevel})),
+        learnSkills: data.learnSkills.map(s => ({...s, level: s.level as SkillLevel | InterestLevel})),
+      };
+      updateUserProfile(profileToUpdate);
       toast({
         title: "Profile Updated",
         description: "Your profile information has been successfully saved.",
@@ -91,14 +106,18 @@ export function ProfileForm() {
   
   // For new skill selection
   const [newTeachSkill, setNewTeachSkill] = React.useState("");
-  const [newTeachLevel, setNewTeachLevel] = React.useState<string>("");
+  const [newTeachLevel, setNewTeachLevel] = React.useState<string>(""); // Will hold SkillLevel
   const [newLearnSkill, setNewLearnSkill] = React.useState("");
-  const [newLearnLevel, setNewLearnLevel] = React.useState<string>("");
+  const [newLearnLevel, setNewLearnLevel] = React.useState<string>(""); // Will hold InterestLevel
 
   const handleAddTeachSkill = () => {
     if (newTeachSkill && newTeachLevel && teachFields.length < 3) {
       const skillToAdd = predefinedSkills.find(s => s.id === newTeachSkill) || { id: newTeachSkill, name: newTeachSkill };
-      appendTeach({ id: skillToAdd.id, name: skillToAdd.name, level: newTeachLevel });
+      appendTeach({ 
+        id: skillToAdd.id, 
+        name: skillToAdd.name, 
+        level: newTeachLevel as typeof allPossibleLevels[number] 
+      });
       setNewTeachSkill("");
       setNewTeachLevel("");
     }
@@ -107,7 +126,11 @@ export function ProfileForm() {
   const handleAddLearnSkill = () => {
     if (newLearnSkill && newLearnLevel && learnFields.length < 3) {
       const skillToAdd = predefinedSkills.find(s => s.id === newLearnSkill) || { id: newLearnSkill, name: newLearnSkill };
-      appendLearn({ id: skillToAdd.id, name: skillToAdd.name, level: newLearnLevel });
+      appendLearn({ 
+        id: skillToAdd.id, 
+        name: skillToAdd.name, 
+        level: newLearnLevel as typeof allPossibleLevels[number]
+      });
       setNewLearnSkill("");
       setNewLearnLevel("");
     }
@@ -142,7 +165,7 @@ export function ProfileForm() {
                     <FormItem className="flex-grow">
                       <FormLabel>Profile Picture URL</FormLabel>
                       <FormControl>
-                        <Input placeholder="https://example.com/your-image.png" {...field} />
+                        <Input placeholder="https://example.com/your-image.png" {...field} value={field.value || ''} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -170,7 +193,7 @@ export function ProfileForm() {
                   <FormItem>
                     <FormLabel>Bio / Summary</FormLabel>
                     <FormControl>
-                      <Textarea placeholder="Tell us a little about yourself (max 200 characters)" {...field} />
+                      <Textarea placeholder="Tell us a little about yourself (max 200 characters)" {...field} value={field.value || ''} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -184,7 +207,7 @@ export function ProfileForm() {
                     <FormItem>
                       <FormLabel>Location</FormLabel>
                       <FormControl>
-                        <Input placeholder="e.g., City, Country" {...field} />
+                        <Input placeholder="e.g., City, Country" {...field} value={field.value || ''} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -197,7 +220,7 @@ export function ProfileForm() {
                     <FormItem>
                       <FormLabel>Time Zone</FormLabel>
                       <FormControl>
-                        <Input placeholder="e.g., PST, GMT+2" {...field} />
+                        <Input placeholder="e.g., PST, GMT+2" {...field} value={field.value || ''} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -232,7 +255,6 @@ export function ProfileForm() {
                         {predefinedSkills.map(s => <SelectItem key={s.id} value={s.id}>{s.name}</SelectItem>)}
                       </SelectContent>
                     </Select>
-                    {/* Add input for custom skill if needed */}
                   </div>
                   <div className="flex-grow w-full md:w-auto">
                      <Label htmlFor="newTeachLevel">Proficiency</Label>
