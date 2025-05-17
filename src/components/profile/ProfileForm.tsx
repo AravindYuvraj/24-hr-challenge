@@ -66,12 +66,12 @@ export function ProfileForm() {
       teachSkills: user?.teachSkills ? user.teachSkills.map(skill => ({
         id: skill.id,
         name: skill.name,
-        level: skill.level as typeof allPossibleLevels[number], // Ensure level matches enum
+        level: skill.level as typeof allPossibleLevels[number], 
       })) : [],
       learnSkills: user?.learnSkills ? user.learnSkills.map(skill => ({
         id: skill.id,
         name: skill.name,
-        level: skill.level as typeof allPossibleLevels[number], // Ensure level matches enum
+        level: skill.level as typeof allPossibleLevels[number], 
       })) : [],
       isProfilePublic: user?.isProfilePublic ?? true,
     },
@@ -90,7 +90,6 @@ export function ProfileForm() {
   function onSubmit(data: ProfileFormValues) {
     console.log("Profile update data:", data);
     if (user) {
-      // Map levels back to the broader UserSkill type if necessary, though Zod schema now aligns
       const profileToUpdate: Partial<UserProfileType> = {
         ...data,
         teachSkills: data.teachSkills.map(s => ({...s, level: s.level as SkillLevel | InterestLevel})),
@@ -105,34 +104,97 @@ export function ProfileForm() {
   }
   
   // For new skill selection
-  const [newTeachSkill, setNewTeachSkill] = React.useState("");
-  const [newTeachLevel, setNewTeachLevel] = React.useState<string>(""); // Will hold SkillLevel
-  const [newLearnSkill, setNewLearnSkill] = React.useState("");
-  const [newLearnLevel, setNewLearnLevel] = React.useState<string>(""); // Will hold InterestLevel
+  const [selectedPredefinedTeachSkillId, setSelectedPredefinedTeachSkillId] = React.useState("");
+  const [newCustomTeachSkillName, setNewCustomTeachSkillName] = React.useState("");
+  const [newTeachLevel, setNewTeachLevel] = React.useState<string>(""); 
+  
+  const [selectedPredefinedLearnSkillId, setSelectedPredefinedLearnSkillId] = React.useState("");
+  const [newCustomLearnSkillName, setNewCustomLearnSkillName] = React.useState("");
+  const [newLearnLevel, setNewLearnLevel] = React.useState<string>("");
 
   const handleAddTeachSkill = () => {
-    if (newTeachSkill && newTeachLevel && teachFields.length < 3) {
-      const skillToAdd = predefinedSkills.find(s => s.id === newTeachSkill) || { id: newTeachSkill, name: newTeachSkill };
-      appendTeach({ 
-        id: skillToAdd.id, 
-        name: skillToAdd.name, 
-        level: newTeachLevel as typeof allPossibleLevels[number] 
-      });
-      setNewTeachSkill("");
+    if (teachFields.length >= 3) {
+      toast({ title: "Limit Reached", description: "You can add a maximum of 3 teach skills.", variant: "destructive" });
+      return;
+    }
+
+    let skillToAdd: { id: string; name: string; level: string } | null = null;
+
+    if (newCustomTeachSkillName.trim() && newTeachLevel) {
+      skillToAdd = {
+        id: `custom-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`, // Unique ID for custom skill
+        name: newCustomTeachSkillName.trim(),
+        level: newTeachLevel,
+      };
+    } else if (selectedPredefinedTeachSkillId && newTeachLevel) {
+      const predefined = predefinedSkills.find(s => s.id === selectedPredefinedTeachSkillId);
+      if (predefined) {
+        skillToAdd = {
+          id: predefined.id,
+          name: predefined.name,
+          level: newTeachLevel,
+        };
+      }
+    }
+
+    if (skillToAdd) {
+      if (teachFields.some(sf => sf.name.toLowerCase() === skillToAdd!.name.toLowerCase())) {
+          toast({ title: "Duplicate Skill", description: `"${skillToAdd.name}" is already in your teach list.`, variant: "destructive" });
+          return;
+      }
+      appendTeach({ id: skillToAdd.id, name: skillToAdd.name, level: skillToAdd.level as typeof allPossibleLevels[number] });
+      setNewCustomTeachSkillName("");
+      setSelectedPredefinedTeachSkillId("");
       setNewTeachLevel("");
+    } else {
+      toast({
+        title: "Incomplete Information",
+        description: "Please provide a skill (custom or predefined) and select a proficiency level.",
+        variant: "destructive",
+      });
     }
   };
 
   const handleAddLearnSkill = () => {
-    if (newLearnSkill && newLearnLevel && learnFields.length < 3) {
-      const skillToAdd = predefinedSkills.find(s => s.id === newLearnSkill) || { id: newLearnSkill, name: newLearnSkill };
-      appendLearn({ 
-        id: skillToAdd.id, 
-        name: skillToAdd.name, 
-        level: newLearnLevel as typeof allPossibleLevels[number]
-      });
-      setNewLearnSkill("");
+    if (learnFields.length >= 3) {
+      toast({ title: "Limit Reached", description: "You can add a maximum of 3 learn skills.", variant: "destructive" });
+      return;
+    }
+    
+    let skillToAdd: { id: string; name: string; level: string } | null = null;
+
+    if (newCustomLearnSkillName.trim() && newLearnLevel) {
+      skillToAdd = {
+        id: `custom-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`,
+        name: newCustomLearnSkillName.trim(),
+        level: newLearnLevel,
+      };
+    } else if (selectedPredefinedLearnSkillId && newLearnLevel) {
+      const predefined = predefinedSkills.find(s => s.id === selectedPredefinedLearnSkillId);
+      if (predefined) {
+        skillToAdd = {
+          id: predefined.id,
+          name: predefined.name,
+          level: newLearnLevel,
+        };
+      }
+    }
+
+    if (skillToAdd) {
+      if (learnFields.some(sf => sf.name.toLowerCase() === skillToAdd!.name.toLowerCase())) {
+        toast({ title: "Duplicate Skill", description: `"${skillToAdd.name}" is already in your learn list.`, variant: "destructive" });
+        return;
+      }
+      appendLearn({ id: skillToAdd.id, name: skillToAdd.name, level: skillToAdd.level as typeof allPossibleLevels[number]});
+      setNewCustomLearnSkillName("");
+      setSelectedPredefinedLearnSkillId("");
       setNewLearnLevel("");
+    } else {
+      toast({
+        title: "Incomplete Information",
+        description: "Please provide a skill (custom or predefined) and select an interest level.",
+        variant: "destructive",
+      });
     }
   };
 
@@ -149,20 +211,20 @@ export function ProfileForm() {
             
             <div className="space-y-4">
               <h3 className="text-xl font-semibold text-primary">Basic Information</h3>
-              <div className="flex items-center gap-4">
+              <div className="flex flex-col sm:flex-row items-center gap-4">
                 <Image 
                   src={form.watch("profilePictureUrl") || "https://placehold.co/100x100.png"} 
                   alt={user?.name || "User"} 
                   width={100} 
                   height={100} 
-                  className="rounded-full aspect-square object-cover"
+                  className="rounded-full aspect-square object-cover flex-shrink-0"
                   data-ai-hint={user?.dataAiHint || "person placeholder"}
                 />
                  <FormField
                   control={form.control}
                   name="profilePictureUrl"
                   render={({ field }) => (
-                    <FormItem className="flex-grow">
+                    <FormItem className="flex-grow w-full">
                       <FormLabel>Profile Picture URL</FormLabel>
                       <FormControl>
                         <Input placeholder="https://example.com/your-image.png" {...field} value={field.value || ''} />
@@ -231,6 +293,7 @@ export function ProfileForm() {
 
             <Separator />
 
+            {/* Skills You Can Teach Section */}
             <div className="space-y-4">
               <h3 className="text-xl font-semibold text-primary">Skills You Can Teach (Max 3)</h3>
                <div className="space-y-2">
@@ -244,22 +307,34 @@ export function ProfileForm() {
                 ))}
               </div>
               {teachFields.length < 3 && (
-                <div className="flex flex-col md:flex-row gap-2 items-end p-3 border rounded-md border-dashed">
-                  <div className="flex-grow w-full md:w-auto">
-                    <Label htmlFor="newTeachSkill">Skill Name</Label>
-                    <Select value={newTeachSkill} onValueChange={setNewTeachSkill}>
-                      <SelectTrigger id="newTeachSkill">
-                        <SelectValue placeholder="Select or type a skill" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {predefinedSkills.map(s => <SelectItem key={s.id} value={s.id}>{s.name}</SelectItem>)}
-                      </SelectContent>
-                    </Select>
+                <div className="flex flex-col gap-3 p-3 border rounded-md border-dashed">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3 items-end">
+                    <div>
+                      <Label htmlFor="selectedPredefinedTeachSkillId">Select Predefined Skill</Label>
+                      <Select value={selectedPredefinedTeachSkillId} onValueChange={setSelectedPredefinedTeachSkillId} disabled={!!newCustomTeachSkillName}>
+                        <SelectTrigger id="selectedPredefinedTeachSkillId">
+                          <SelectValue placeholder="Choose from list" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {predefinedSkills.map(s => <SelectItem key={s.id} value={s.id}>{s.name}</SelectItem>)}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div>
+                      <Label htmlFor="newCustomTeachSkillName">Or Enter Custom Skill</Label>
+                      <Input 
+                        id="newCustomTeachSkillName" 
+                        placeholder="e.g., Advanced Figma" 
+                        value={newCustomTeachSkillName}
+                        onChange={(e) => setNewCustomTeachSkillName(e.target.value)}
+                        disabled={!!selectedPredefinedTeachSkillId}
+                      />
+                    </div>
                   </div>
-                  <div className="flex-grow w-full md:w-auto">
-                     <Label htmlFor="newTeachLevel">Proficiency</Label>
+                  <div>
+                    <Label htmlFor="newTeachLevel">Proficiency Level</Label>
                     <Select value={newTeachLevel} onValueChange={setNewTeachLevel}>
-                      <SelectTrigger id="newTeachLevel">
+                      <SelectTrigger id="newTeachLevel" className="w-full">
                         <SelectValue placeholder="Select proficiency" />
                       </SelectTrigger>
                       <SelectContent>
@@ -267,7 +342,7 @@ export function ProfileForm() {
                       </SelectContent>
                     </Select>
                   </div>
-                  <Button type="button" onClick={handleAddTeachSkill} variant="outline" className="w-full md:w-auto">
+                  <Button type="button" onClick={handleAddTeachSkill} variant="outline" className="w-full mt-2">
                     <PlusCircle className="mr-2 h-4 w-4" /> Add Teach Skill
                   </Button>
                 </div>
@@ -277,6 +352,7 @@ export function ProfileForm() {
             
             <Separator />
 
+            {/* Skills You Want to Learn Section */}
             <div className="space-y-4">
               <h3 className="text-xl font-semibold text-primary">Skills You Want to Learn (Max 3)</h3>
               <div className="space-y-2">
@@ -290,22 +366,34 @@ export function ProfileForm() {
                 ))}
               </div>
               {learnFields.length < 3 && (
-                <div className="flex flex-col md:flex-row gap-2 items-end p-3 border rounded-md border-dashed">
-                   <div className="flex-grow w-full md:w-auto">
-                     <Label htmlFor="newLearnSkill">Skill Name</Label>
-                    <Select value={newLearnSkill} onValueChange={setNewLearnSkill}>
-                      <SelectTrigger id="newLearnSkill">
-                        <SelectValue placeholder="Select or type a skill" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {predefinedSkills.map(s => <SelectItem key={s.id} value={s.id}>{s.name}</SelectItem>)}
-                      </SelectContent>
-                    </Select>
+                 <div className="flex flex-col gap-3 p-3 border rounded-md border-dashed">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3 items-end">
+                    <div>
+                      <Label htmlFor="selectedPredefinedLearnSkillId">Select Predefined Skill</Label>
+                      <Select value={selectedPredefinedLearnSkillId} onValueChange={setSelectedPredefinedLearnSkillId} disabled={!!newCustomLearnSkillName}>
+                        <SelectTrigger id="selectedPredefinedLearnSkillId">
+                          <SelectValue placeholder="Choose from list" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {predefinedSkills.map(s => <SelectItem key={s.id} value={s.id}>{s.name}</SelectItem>)}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div>
+                      <Label htmlFor="newCustomLearnSkillName">Or Enter Custom Skill</Label>
+                      <Input 
+                        id="newCustomLearnSkillName" 
+                        placeholder="e.g., Beginner Node.js" 
+                        value={newCustomLearnSkillName}
+                        onChange={(e) => setNewCustomLearnSkillName(e.target.value)}
+                        disabled={!!selectedPredefinedLearnSkillId}
+                      />
+                    </div>
                   </div>
-                  <div className="flex-grow w-full md:w-auto">
+                  <div>
                     <Label htmlFor="newLearnLevel">Interest Level</Label>
                     <Select value={newLearnLevel} onValueChange={setNewLearnLevel}>
-                      <SelectTrigger id="newLearnLevel">
+                      <SelectTrigger id="newLearnLevel" className="w-full">
                         <SelectValue placeholder="Select interest" />
                       </SelectTrigger>
                       <SelectContent>
@@ -313,7 +401,7 @@ export function ProfileForm() {
                       </SelectContent>
                     </Select>
                   </div>
-                  <Button type="button" onClick={handleAddLearnSkill} variant="outline" className="w-full md:w-auto">
+                  <Button type="button" onClick={handleAddLearnSkill} variant="outline" className="w-full mt-2">
                     <PlusCircle className="mr-2 h-4 w-4" /> Add Learn Skill
                   </Button>
                 </div>
