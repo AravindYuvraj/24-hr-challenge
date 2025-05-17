@@ -1,9 +1,18 @@
 
+import type { Metadata } from 'next';
+import { Inter } from 'next/font/google';
 import './globals.css';
+import { ThemeProvider } from '@/components/providers/theme-provider';
+import { Toaster } from "@/components/ui/toaster";
 
-export const metadata = {
-  title: 'SkillSwap (Debugging)',
-  description: 'Debugging 404 issue for SkillSwap.',
+const inter = Inter({
+  subsets: ['latin'],
+  variable: '--font-inter',
+});
+
+export const metadata: Metadata = {
+  title: 'SkillSwap',
+  description: 'Peer-to-peer skill exchange platform by Firebase Studio',
 };
 
 export default function RootLayout({
@@ -13,9 +22,16 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      {/* Simplified body with no dynamic classes from fonts */}
-      <body>
-        {children}
+      <body className={`${inter.variable} antialiased`}>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          {children}
+          <Toaster />
+        </ThemeProvider>
       </body>
     </html>
   );

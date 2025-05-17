@@ -1,4 +1,4 @@
-"use client";
+"use client"; // THIS MUST BE THE VERY FIRST LINE
 
 import * as React from "react"
 import { ThemeProvider as NextThemesProvider } from "next-themes"

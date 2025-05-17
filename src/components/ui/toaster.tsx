@@ -1,4 +1,4 @@
-"use client";
+"use client"; // THIS MUST BE THE VERY FIRST LINE
 
 import { useToast } from "@/hooks/use-toast"
 import {
