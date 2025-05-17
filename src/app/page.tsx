@@ -41,7 +41,7 @@ export default function HomePage() {
       </div>
 
       <footer className="mt-20 text-center text-muted-foreground text-sm">
-        <p>&copy; {new Date().getFullYear()} SkillSwap. Built with Next.js & Firebase Studio.</p>
+        <p>&copy; {new Date().getFullYear()} SkillSwap. All rights reserved.</p>
       </footer>
     </div>
   );

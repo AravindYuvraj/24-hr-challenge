@@ -1,5 +1,5 @@
 
-import { LayoutDashboard, UserCircle, Mail, CalendarDays, Search, Users, Settings, LucideIcon } from 'lucide-react'; // Added Users
+import { LayoutDashboard, UserCircle, Mail, CalendarDays, Search, Users, Settings, LucideIcon, BarChartBig } from 'lucide-react'; // Added Users and BarChartBig
 
 export type NavItem = {
   title: string;
@@ -23,8 +23,7 @@ export const siteConfig = {
     { title: "My Profile", href: "/profile", icon: UserCircle },
     { title: "Pairing Requests", href: "/requests", icon: Mail },
     { title: "Calendar", href: "/calendar", icon: CalendarDays, disabled: false },
-    // { title: "Explore Users", href: "/explore", icon: Search, disabled: true }, // Can be removed if public explore is preferred
-    // { title: "Analytics", href: "/analytics", icon: BarChartBig, disabled: true },
+    { title: "Analytics", href: "/analytics", icon: BarChartBig, disabled: false },
   ] satisfies NavItem[],
   settingsNav: [
     // { title: "Account", href: "/settings/account", icon: Settings },
